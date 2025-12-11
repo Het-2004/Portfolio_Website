@@ -217,7 +217,7 @@ if (downloadResumeBtn) {
         e.preventDefault();
         
         // Use the actual resume file in your folder
-        const resumePath = 'Het_resume.pdf';
+        const resumePath = 'Het resume.pdf';
         
         // Create a temporary link and trigger download
         const link = document.createElement('a');
