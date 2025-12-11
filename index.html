@@ -1,288 +1,758 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Het Solanki - Portfolio</title>
+    <meta name="description" content="Het Solanki - Computer Engineering Student | Full Stack Developer | Java, Spring Boot, React Developer">
+    <meta name="keywords" content="Het Solanki, Developer, Portfolio, Java, Spring Boot, React, Full Stack">
+    <meta name="author" content="Het Solanki">
+    <title>Het Solanki | Software Developer & Engineer</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons CDN (for icons) -->
+    <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- External CSS -->
     <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Space Grotesk', 'system-ui', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-purple-100 to-blue-100 text-gray-800 page-transition">
+<body class="min-h-screen bg-slate-950 text-slate-100">
     
     <!-- Scroll Progress Indicator -->
     <div class="scroll-indicator" id="scroll-progress"></div>
     
-    <!-- Particle Background -->
-    <div class="particle-bg" id="particle-bg"></div>
+    <!-- Animated Particles Background -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0" id="particles-container">
+        <div class="absolute w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl top-0 -left-48 animate-blob"></div>
+        <div class="absolute w-96 h-96 bg-purple-500/10 rounded-full blur-3xl top-0 -right-48 animate-blob animation-delay-2000"></div>
+        <div class="absolute w-96 h-96 bg-blue-500/10 rounded-full blur-3xl bottom-0 left-1/2 animate-blob animation-delay-4000"></div>
+        
+        <!-- Particle canvas -->
+        <canvas id="particle-canvas" class="absolute inset-0 w-full h-full"></canvas>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top" class="fixed bottom-8 right-8 z-50 p-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 opacity-0 pointer-events-none group" aria-label="Scroll to top">
+        <i data-lucide="arrow-up" class="w-6 h-6 group-hover:scale-110 transition-transform"></i>
+    </button>
 
     <!-- Navigation Bar -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-white glass-effect shadow-md p-4 flex justify-center items-center space-x-6 md:space-x-10 rounded-b-xl opacity-0" id="main-nav">
-        <button class="nav-item flex flex-col items-center p-2 rounded-lg transition-all duration-300 ease-in-out text-gray-600 hover:text-purple-600 hover:bg-gray-100 active-nav magnetic ripple" data-section-id="home">
-            <i data-lucide="home" class="w-5 h-5"></i>
-            <span class="text-xs mt-1 font-medium hidden md:block">Home</span>
-        </button>
-        <button class="nav-item flex flex-col items-center p-2 rounded-lg transition-all duration-300 ease-in-out text-gray-600 hover:text-purple-600 hover:bg-gray-100 magnetic ripple" data-section-id="about">
-            <i data-lucide="user" class="w-5 h-5"></i>
-            <span class="text-xs mt-1 font-medium hidden md:block">About</span>
-        </button>
-        <button class="nav-item flex flex-col items-center p-2 rounded-lg transition-all duration-300 ease-in-out text-gray-600 hover:text-purple-600 hover:bg-gray-100 magnetic ripple" data-section-id="skills">
-            <i data-lucide="code" class="w-5 h-5"></i>
-            <span class="text-xs mt-1 font-medium hidden md:block">Skills</span>
-        </button>
-        <button class="nav-item flex flex-col items-center p-2 rounded-lg transition-all duration-300 ease-in-out text-gray-600 hover:text-purple-600 hover:bg-gray-100 magnetic ripple" data-section-id="projects">
-            <i data-lucide="briefcase" class="w-5 h-5"></i>
-            <span class="text-xs mt-1 font-medium hidden md:block">Projects</span>
-        </button>
-        <button class="nav-item flex flex-col items-center p-2 rounded-lg transition-all duration-300 ease-in-out text-gray-600 hover:text-purple-600 hover:bg-gray-100 magnetic ripple" data-section-id="education">
-            <i data-lucide="graduation-cap" class="w-5 h-5"></i>
-            <span class="text-xs mt-1 font-medium hidden md:block">Education</span>
-        </button>
-        <button class="nav-item flex flex-col items-center p-2 rounded-lg transition-all duration-300 ease-in-out text-gray-600 hover:text-purple-600 hover:bg-gray-100 magnetic ripple" data-section-id="contact">
-            <i data-lucide="mail" class="w-5 h-5"></i>
-            <span class="text-xs mt-1 font-medium hidden md:block">Contact</span>
-        </button>
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800 transition-all duration-500 opacity-0 -translate-y-4" id="main-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+            <div class="flex justify-between items-center">
+                <button type="button" id="mobile-logo-trigger" class="flex items-center space-x-2 focus:outline-none active:scale-95 transition-transform" aria-label="Open menu">
+                    <div class="relative px-4 py-2 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 rounded-lg shadow-lg overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-yellow-400/20 via-transparent to-blue-500/20 animate-pulse"></div>
+                        <span class="relative text-xl font-bold text-white drop-shadow-lg">HS</span>
+                    </div>
+                </button>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <button class="nav-item text-slate-300 hover:text-cyan-400 transition-colors font-medium" data-section-id="home">Home</button>
+                    <button class="nav-item text-slate-300 hover:text-cyan-400 transition-colors font-medium" data-section-id="about">About</button>
+                    <button class="nav-item text-slate-300 hover:text-cyan-400 transition-colors font-medium" data-section-id="skills">Skills</button>
+                    <button class="nav-item text-slate-300 hover:text-cyan-400 transition-colors font-medium" data-section-id="projects">Projects</button>
+                    <button class="nav-item text-slate-300 hover:text-cyan-400 transition-colors font-medium" data-section-id="education">Education</button>
+                    <button class="nav-item text-slate-300 hover:text-cyan-400 transition-colors font-medium" data-section-id="contact">Contact</button>
+                </div>
+                
+                <!-- Desktop CTA Button -->
+                <a href="#contact" class="hidden md:block px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg font-semibold text-white hover:shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105">
+                    Let's Talk
+                </a>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu-overlay" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"></div>
+        
+        <!-- Mobile Menu Sidebar -->
+        <div id="mobile-menu" class="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-l border-slate-700 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden overflow-y-auto pt-16">
+            <div class="p-4 sm:p-6 space-y-4 sm:space-y-6">
+                <!-- Menu Header -->
+                <div class="border-b border-slate-700 pb-3 sm:pb-4">
+                    <h3 class="text-base sm:text-lg font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Navigation</h3>
+                </div>
+                
+                <!-- Menu Items -->
+                <div class="space-y-2 sm:space-y-3">
+                    <button class="mobile-nav-item w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-slate-300 hover:bg-slate-800/50 hover:text-cyan-400 transition-all duration-200 flex items-center gap-2 sm:gap-3 group" data-section-id="home">
+                        <i data-lucide="home" class="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 shrink-0"></i>
+                        <span class="font-medium text-sm sm:text-base">Home</span>
+                        <i data-lucide="chevron-right" class="w-3 h-3 sm:w-4 sm:h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity shrink-0"></i>
+                    </button>
+                    <button class="mobile-nav-item w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-slate-300 hover:bg-slate-800/50 hover:text-cyan-400 transition-all duration-200 flex items-center gap-2 sm:gap-3 group" data-section-id="about">
+                        <i data-lucide="user" class="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 shrink-0"></i>
+                        <span class="font-medium text-sm sm:text-base">About</span>
+                        <i data-lucide="chevron-right" class="w-3 h-3 sm:w-4 sm:h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity shrink-0"></i>
+                    </button>
+                    <button class="mobile-nav-item w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-slate-300 hover:bg-slate-800/50 hover:text-cyan-400 transition-all duration-200 flex items-center gap-2 sm:gap-3 group" data-section-id="skills">
+                        <i data-lucide="code-2" class="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 shrink-0"></i>
+                        <span class="font-medium text-sm sm:text-base">Skills</span>
+                        <i data-lucide="chevron-right" class="w-3 h-3 sm:w-4 sm:h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity shrink-0"></i>
+                    </button>
+                    <button class="mobile-nav-item w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-slate-300 hover:bg-slate-800/50 hover:text-cyan-400 transition-all duration-200 flex items-center gap-2 sm:gap-3 group" data-section-id="projects">
+                        <i data-lucide="folder" class="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 shrink-0"></i>
+                        <span class="font-medium text-sm sm:text-base">Projects</span>
+                        <i data-lucide="chevron-right" class="w-3 h-3 sm:w-4 sm:h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity shrink-0"></i>
+                    </button>
+                    <button class="mobile-nav-item w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-slate-300 hover:bg-slate-800/50 hover:text-cyan-400 transition-all duration-200 flex items-center gap-2 sm:gap-3 group" data-section-id="education">
+                        <i data-lucide="graduation-cap" class="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 shrink-0"></i>
+                        <span class="font-medium text-sm sm:text-base">Education</span>
+                        <i data-lucide="chevron-right" class="w-3 h-3 sm:w-4 sm:h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity shrink-0"></i>
+                    </button>
+                    <button class="mobile-nav-item w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-slate-300 hover:bg-slate-800/50 hover:text-cyan-400 transition-all duration-200 flex items-center gap-2 sm:gap-3 group" data-section-id="contact">
+                        <i data-lucide="mail" class="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 shrink-0"></i>
+                        <span class="font-medium text-sm sm:text-base">Contact</span>
+                        <i data-lucide="chevron-right" class="w-3 h-3 sm:w-4 sm:h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity shrink-0"></i>
+                    </button>
+                </div>
+                
+                <!-- CTA Button -->
+                <div class="pt-3 sm:pt-4 border-t border-slate-700">
+                    <a href="#contact" class="block w-full px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg font-semibold text-white text-center hover:shadow-lg hover:shadow-cyan-500/50 transition-all duration-300">
+                        Let's Talk
+                    </a>
+                </div>
+                
+                <!-- Social Links -->
+                <div class="pt-4 border-t border-slate-700">
+                    <p class="text-xs text-slate-500 mb-3">Connect with me</p>
+                    <div class="flex gap-3">
+                        <a href="https://github.com/Het-2004" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-800/50 rounded-lg hover:bg-slate-700 transition-colors">
+                            <i data-lucide="github" class="w-5 h-5 text-slate-400"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/hetsolanki/" target="_blank" rel="noopener noreferrer" class="p-2 bg-slate-800/50 rounded-lg hover:bg-slate-700 transition-colors">
+                            <i data-lucide="linkedin" class="w-5 h-5 text-slate-400"></i>
+                        </a>
+                        <a href="mailto:hetps2122004@gmail.com" class="p-2 bg-slate-800/50 rounded-lg hover:bg-slate-700 transition-colors">
+                            <i data-lucide="mail" class="w-5 h-5 text-slate-400"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </nav>
 
-    <main class="pt-20 pb-8 px-4 md:px-8 lg:px-16 max-w-6xl mx-auto">
+    <main class="relative z-10">
         <!-- Hero Section -->
-        <section id="home" class="min-h-[calc(100vh-80px)] flex items-center justify-center py-16 animate-fade-in">
-            <div class="text-center">
-                <img
-                    src="https://placehold.co/150x150/a855f7/ffffff?text=HS"
-                    alt="Profile Picture"
-                    class="w-36 h-36 rounded-full mx-auto mb-6 shadow-lg border-4 border-purple-400 animate-bounce-subtle breathe tilt-effect"
-                    onerror="this.onerror=null; this.src='https://placehold.co/150x150/a855f7/ffffff?text=HS';"
-                />
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-4 leading-tight">
-                    Hi, I'm <span class="text-purple-600 text-shimmer neon-glow typing-cursor">Het Solanki</span>
-                </h1>
-                <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                    A passionate <span class="font-semibold text-purple-700">Programmer and Developer</span>
-                </p>
-                <div class="flex justify-center space-x-4">
-                    <a href="https://github.com/Het-2004" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-600 text-white hover:bg-purple-700 transition duration-300 ease-in-out shadow-md hover:shadow-lg morph-btn magnetic neon-border" aria-label="GitHub">
-                        <i data-lucide="github" class="w-6 h-6"></i>
-                    </a>
-                    <a href="https://www.linkedin.com/in/hetsolanki/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-600 text-white hover:bg-purple-700 transition duration-300 ease-in-out shadow-md hover:shadow-lg morph-btn magnetic neon-border" aria-label="LinkedIn">
-                        <i data-lucide="linkedin" class="w-6 h-6"></i>
-                    </a>
+        <section id="home" class="min-h-screen flex items-center justify-center px-6 pt-20">
+            <div class="max-w-6xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-6">
+                        <div class="inline-block">
+                            <span class="px-4 py-2 bg-slate-800 border border-cyan-500/30 rounded-full text-sm text-cyan-400 font-mono">👋 Welcome to my portfolio</span>
+                        </div>
+                        <h1 class="text-5xl md:text-7xl font-bold leading-tight">
+                            <span class="text-slate-100">I'm </span>
+                            <span class="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">Het Solanki</span>
+                        </h1>
+                        <div class="flex items-center space-x-2">
+                            <div class="h-1 w-12 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full"></div>
+                            <p class="text-xl md:text-2xl text-slate-400 font-mono">Software Engineer & Developer</p>
+                        </div>
+                        <p class="text-lg text-slate-400 leading-relaxed max-w-xl">
+                            Computer Engineering student specializing in <span class="text-cyan-400 font-semibold">Full Stack Development</span>, <span class="text-blue-400 font-semibold">Java + DSA</span>, and <span class="text-purple-400 font-semibold">Basic Linux</span>.
+                        </p>
+                        <div class="flex flex-wrap gap-4 pt-4">
+                            <a href="#contact" class="group relative px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-semibold text-white overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/50 transform hover:scale-105">
+                                <span class="relative z-10 flex items-center">
+                                    <i data-lucide="send" class="w-5 h-5 mr-2"></i>
+                                    Get in Touch
+                                </span>
+                            </a>
+                            <a href="#projects" class="px-8 py-4 bg-slate-800 border-2 border-slate-700 rounded-xl font-semibold text-slate-100 hover:border-cyan-500 transition-all duration-300 transform hover:scale-105">
+                                View Projects
+                            </a>
+                            <button id="download-resume" class="px-8 py-4 bg-slate-800 border-2 border-slate-700 rounded-xl font-semibold text-slate-100 hover:border-purple-500 transition-all duration-300 transform hover:scale-105 flex items-center">
+                                <i data-lucide="download" class="w-5 h-5 mr-2"></i>
+                                Download CV
+                            </button>
+                        </div>
+                        <div class="flex items-center space-x-6 pt-6">
+                            <a href="https://github.com/Het-2004" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-all duration-300 group">
+                                <i data-lucide="github" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                            </a>
+                            <a href="https://www.linkedin.com/in/hetsolanki/" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-all duration-300 group">
+                                <i data-lucide="linkedin" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                            </a>
+                            <a href="https://instagram.com/vasu_solanki_2" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-all duration-300 group">
+                                <i data-lucide="instagram" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="relative w-full aspect-square max-w-md mx-auto">
+                            <!-- Multi-layered animated gradient backgrounds -->
+                            <div class="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 rounded-3xl opacity-40 blur-3xl animate-pulse"></div>
+                            <div class="absolute inset-0 bg-gradient-to-br from-pink-500 via-purple-500 to-cyan-500 rounded-3xl opacity-30 blur-2xl animate-spin-slow"></div>
+                            <div class="absolute inset-0 bg-gradient-to-tl from-blue-600 via-cyan-400 to-purple-500 rounded-3xl opacity-25 blur-xl animate-reverse-spin"></div>
+                            
+                            <!-- Orbiting gradient rings -->
+                            <div class="absolute inset-[-10px] rounded-3xl bg-gradient-to-r from-cyan-400 via-blue-500 via-purple-600 to-pink-500 animate-gradient-rotate opacity-60"></div>
+                            <div class="absolute inset-[-5px] rounded-3xl bg-gradient-to-l from-purple-500 via-cyan-400 to-blue-600 animate-gradient-rotate-reverse opacity-50"></div>
+                            
+                            <!-- Photo container -->
+                            <div class="relative bg-slate-900 rounded-3xl p-1 backdrop-blur-sm">
+                                <div class="relative bg-slate-800/90 rounded-[22px] p-6 overflow-hidden backdrop-blur-xl border border-slate-700/50">
+                                    <!-- Animated shimmer effect -->
+                                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
+                                    
+                                    <!-- Floating badge with glow -->
+                                    <div class="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-2xl shadow-cyan-500/60 animate-float z-10">
+                                        <i data-lucide="code-2" class="w-10 h-10"></i>
+                                    </div>
+                                    
+                                    <!-- Photo with advanced effects -->
+                                    <div class="relative group">
+                                        <img src="het_solanki_photo.jpg" alt="Het Solanki" class="w-full h-full object-cover rounded-2xl transition-all duration-700 group-hover:scale-110 group-hover:rotate-2 group-hover:shadow-2xl group-hover:shadow-cyan-500/60" onerror="this.onerror=null; this.src='https://placehold.co/400x400/0f172a/06b6d4?text=HS&font=montserrat';">
+                                        <!-- Dynamic hover overlay with gradient -->
+                                        <div class="absolute inset-0 bg-gradient-to-t from-cyan-500/30 via-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-2xl"></div>
+                                        <!-- Corner accents -->
+                                        <div class="absolute top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-cyan-400/0 group-hover:border-cyan-400/60 rounded-tl-2xl transition-all duration-500"></div>
+                                        <div class="absolute bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-purple-400/0 group-hover:border-purple-400/60 rounded-br-2xl transition-all duration-500"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics Section -->
+        <section id="statistics" class="py-20 px-6">
+            <div class="max-w-6xl mx-auto">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 text-center hover:border-cyan-500/50 transition-all duration-300 group">
+                        <div class="text-5xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform" data-count="15">0</div>
+                        <div class="text-slate-400 font-medium">Projects</div>
+                    </div>
+                    <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 text-center hover:border-blue-500/50 transition-all duration-300 group">
+                        <div class="text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform" data-count="12">0</div>
+                        <div class="text-slate-400 font-medium">Technologies</div>
+                    </div>
+                    <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 text-center hover:border-purple-500/50 transition-all duration-300 group">
+                        <div class="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform" data-count="141">0</div>
+                        <div class="text-slate-400 font-medium">Contributions</div>
+                    </div>
+                    <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 text-center hover:border-pink-500/50 transition-all duration-300 group">
+                        <div class="text-5xl font-bold bg-gradient-to-r from-pink-400 to-cyan-500 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform" data-count="4">0</div>
+                        <div class="text-slate-400 font-medium">Years Coding</div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- About Me Section -->
-        <section id="about" class="py-16 md:py-24 bg-white glass-effect rounded-xl shadow-lg mb-12 p-6 md:p-10 animate-fade-in card-3d">
-            <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10 relative pb-4">
-                About Me
-                <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-purple-600 rounded-full"></span>
-            </h2>
-            <div class="flex flex-col md:flex-row items-center md:space-x-10">
-                <div class="md:w-1/3 mb-6 md:mb-0">
-                    <img
-                        src="Het photo.jpg"
-                        alt="About Me"
-                        class="w-full h-auto rounded-lg shadow-md"
-                        onerror="this.onerror=null; this.src='https://placehold.co/300x300/a855f7/ffffff?text=Your+Photo';"
-                    />
+        <section id="about" class="py-20 px-6">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <span class="inline-block px-4 py-2 bg-slate-800 border border-cyan-500/30 rounded-full text-sm text-cyan-400 font-mono mb-4">About Me</span>
+                    <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                        <span class="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Building Digital Solutions</span>
+                    </h2>
+                    <div class="h-1 w-24 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full mx-auto"></div>
                 </div>
-                <div class="md:w-2/3 text-gray-700 leading-relaxed">
-                    <p class="mb-4">
-                        Hello! I'm Het Solanki, a passionate programmer and frontend developer with a strong foundation in creating engaging, responsive web applications. My journey in technology began with a curiosity about how computers work, which led me to explore programming languages, web development, and the intricate world of computer systems.
-                    </p>
-                    <p class="mb-4">
-                        As a frontend developer, I specialize in crafting intuitive user interfaces using HTML, CSS, JavaScript, and modern frameworks. My programming expertise spans multiple languages including C, Java, Python, and SQL. Beyond web development, I have solid knowledge of networking protocols and computer hardware architecture, which gives me a comprehensive understanding of how software and systems interact.
-                    </p>
-                    <p class="mb-4">
-                        I enjoy solving complex problems through code and am always excited to learn emerging technologies. My technical foundation in networking and hardware helps me write more efficient code and understand system-level optimizations.
-                    </p>
-                    <p>
-                        I'm driven by the desire to create meaningful digital experiences and contribute to innovative projects. Let's build something extraordinary together!
-                    </p>
+                <div class="grid md:grid-cols-2 gap-12 items-start">
+                    <div class="space-y-6">
+                        <p class="text-lg text-slate-300 leading-relaxed">
+                            I'm a <span class="text-cyan-400 font-semibold">Computer Engineering student</span> at Vishwakarma Government Engineering College with a passion for transforming ideas into elegant code solutions.
+                        </p>
+                        <p class="text-lg text-slate-300 leading-relaxed">
+                            My expertise spans across <span class="text-blue-400 font-semibold">full-stack development</span>, with strong proficiency in Java Spring Boot for backend systems and modern JavaScript frameworks for creating intuitive user interfaces.
+                        </p>
+                        <p class="text-lg text-slate-300 leading-relaxed">
+                            Beyond development, I have deep knowledge of <span class="text-purple-400 font-semibold">computer systems</span>, networking protocols, and system-level optimizations, enabling me to build efficient, scalable applications.
+                        </p>
+                        <div class="flex flex-wrap gap-3 pt-4">
+                            <span class="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-slate-300">Problem Solver</span>
+                            <span class="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-slate-300">Quick Learner</span>
+                            <span class="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-slate-300">Team Player</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 hover:border-cyan-500/50 transition-all">
+                            <i data-lucide="code-2" class="w-8 h-8 text-cyan-400 mb-3"></i>
+                            <h3 class="text-lg font-semibold text-slate-100 mb-2">Full Stack Dev</h3>
+                            <p class="text-sm text-slate-400">Building end-to-end applications</p>
+                        </div>
+                        <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 hover:border-blue-500/50 transition-all">
+                            <i data-lucide="database" class="w-8 h-8 text-blue-400 mb-3"></i>
+                            <h3 class="text-lg font-semibold text-slate-100 mb-2">Backend Expert</h3>
+                            <p class="text-sm text-slate-400">Java, Spring Boot, APIs</p>
+                        </div>
+                        <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 hover:border-purple-500/50 transition-all">
+                            <i data-lucide="cpu" class="w-8 h-8 text-purple-400 mb-3"></i>
+                            <h3 class="text-lg font-semibold text-slate-100 mb-2">System Design</h3>
+                            <p class="text-sm text-slate-400">Scalable architectures</p>
+                        </div>
+                        <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 hover:border-pink-500/50 transition-all">
+                            <i data-lucide="git-branch" class="w-8 h-8 text-pink-400 mb-3"></i>
+                            <h3 class="text-lg font-semibold text-slate-100 mb-2">Version Control</h3>
+                            <p class="text-sm text-slate-400">Git, GitHub workflows</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Skills Section -->
-        <section id="skills" class="py-16 md:py-24 bg-purple-50 rounded-xl shadow-lg mb-12 p-6 md:p-10 animate-fade-in">
-            <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10 relative pb-4">
-                My Skills
-                <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-purple-600 rounded-full"></span>
-            </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-                <div class="skill-card flex flex-col items-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/C_Programming_Language.svg" alt="C icon" class="w-16 h-16 mb-4" onerror="this.onerror=null; this.src='https://placehold.co/64x64/cccccc/333333?text=C';">
-                    <h3 class="text-lg font-semibold text-gray-800">C</h3>
+        <section id="skills" class="py-20 px-6">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <span class="inline-block px-4 py-2 bg-slate-800 border border-cyan-500/30 rounded-full text-sm text-cyan-400 font-mono mb-4">Tech Stack</span>
+                    <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                        <span class="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Technologies & Skills</span>
+                    </h2>
+                    <div class="h-1 w-24 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full mx-auto"></div>
                 </div>
-                <div class="skill-card flex flex-col items-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200">
-                    <img src="icons8-java-logo.gif" alt="Java icon" class="w-16 h-16 mb-4" onerror="this.onerror=null; this.src='https://placehold.co/64x64/cccccc/333333?text=Java';">
-                    <h3 class="text-lg font-semibold text-gray-800">Java</h3>
-                </div>
-                <div class="skill-card flex flex-col items-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" alt="Python icon" class="w-16 h-16 mb-4" onerror="this.onerror=null; this.src='https://placehold.co/64x64/cccccc/333333?text=PY';">
-                    <h3 class="text-lg font-semibold text-gray-800">Python</h3>
-                </div>
-                <div class="skill-card flex flex-col items-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200">
-                    <img src="SQL_Image.svg.png" alt="SQL icon" class="w-16 h-16 mb-4" onerror="this.onerror=null; this.src='https://placehold.co/64x64/cccccc/333333?text=SQL';">
-                    <h3 class="text-lg font-semibold text-gray-800">SQL</h3>
-                </div>
-                <div class="skill-card flex flex-col items-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200">
-                    <i data-lucide="database" class="w-16 h-16 mb-4 text-purple-600"></i>
-                    <h3 class="text-lg font-semibold text-gray-800">Database</h3>
-                </div>
-                <div class="skill-card flex flex-col items-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200">
-                    <i data-lucide="network" class="w-16 h-16 mb-4 text-purple-600"></i>
-                    <h3 class="text-lg font-semibold text-gray-800">Networking</h3>
-                </div>
-                <div class="skill-card flex flex-col items-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/61/HTML5_logo_and_wordmark.svg" alt="HTML5 icon" class="w-16 h-16 mb-4" onerror="this.onerror=null; this.src='https://placehold.co/64x64/cccccc/333333?text=H5';">
-                    <h3 class="text-lg font-semibold text-gray-800">HTML</h3>
-                </div>
-                <div class="skill-card flex flex-col items-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/CSS3_logo_and_wordmark.svg" alt="CSS3 icon" class="w-16 h-16 mb-4" onerror="this.onerror=null; this.src='https://placehold.co/64x64/cccccc/333333?text=C3';">
-                    <h3 class="text-lg font-semibold text-gray-800">CSS</h3>
-                </div>
-                <div class="skill-card flex flex-col items-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Bootstrap_logo.svg" alt="Bootstrap icon" class="w-16 h-16 mb-4" onerror="this.onerror=null; this.src='https://placehold.co/64x64/cccccc/333333?text=BS';">
-                    <h3 class="text-lg font-semibold text-gray-800">Bootstrap</h3>
-                </div>
-                <div class="skill-card flex flex-col items-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" alt="Tailwind CSS icon" class="w-16 h-16 mb-4" onerror="this.onerror=null; this.src='https://placehold.co/64x64/cccccc/333333?text=TW';">
-                    <h3 class="text-lg font-semibold text-gray-800">Tailwind CSS</h3>
-                </div>
-                <div class="skill-card flex flex-col items-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Git-logo.svg" alt="Git icon" class="w-16 h-16 mb-4" onerror="this.onerror=null; this.src='https://placehold.co/64x64/cccccc/333333?text=Git';">
-                    <h3 class="text-lg font-semibold text-gray-800">Git</h3>
-                </div>
-                <div class="skill-card flex flex-col items-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub icon" class="w-16 h-16 mb-4" onerror="this.onerror=null; this.src='https://placehold.co/64x64/cccccc/333333?text=GH';">
-                    <h3 class="text-lg font-semibold text-gray-800">GitHub</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div class="skill-card group bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-cyan-500 transition-all duration-300">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/C_Programming_Language.svg" alt="C" class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform">
+                        <h3 class="text-slate-100 font-semibold">C</h3>
+                    </div>
+                    <div class="skill-card group bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-orange-500 transition-all duration-300">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java" class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform">
+                        <h3 class="text-slate-100 font-semibold">Java</h3>
+                    </div>
+                    <div class="skill-card group bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-blue-500 transition-all duration-300">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" alt="Python" class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform">
+                        <h3 class="text-slate-100 font-semibold">Python</h3>
+                    </div>
+                    <div class="skill-card group bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-yellow-500 transition-all duration-300">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform">
+                        <h3 class="text-slate-100 font-semibold">JavaScript</h3>
+                    </div>
+                    <div class="skill-card group bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-green-500 transition-all duration-300">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" alt="Spring Boot" class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform">
+                        <h3 class="text-slate-100 font-semibold">Spring Boot</h3>
+                    </div>
+                    <div class="skill-card group bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-cyan-500 transition-all duration-300">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React" class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform">
+                        <h3 class="text-slate-100 font-semibold">React</h3>
+                    </div>
+                    <div class="skill-card group bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-orange-500 transition-all duration-300">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/6/61/HTML5_logo_and_wordmark.svg" alt="HTML5" class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform">
+                        <h3 class="text-slate-100 font-semibold">HTML5</h3>
+                    </div>
+                    <div class="skill-card group bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-blue-500 transition-all duration-300">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/CSS3_logo_and_wordmark.svg" alt="CSS3" class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform">
+                        <h3 class="text-slate-100 font-semibold">CSS3</h3>
+                    </div>
+                    <div class="skill-card group bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-cyan-500 transition-all duration-300">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" alt="Tailwind" class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform">
+                        <h3 class="text-slate-100 font-semibold">Tailwind CSS</h3>
+                    </div>
+                    <div class="skill-card group bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-purple-500 transition-all duration-300">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Bootstrap_logo.svg" alt="Bootstrap" class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform">
+                        <h3 class="text-slate-100 font-semibold">Bootstrap</h3>
+                    </div>
+                    <div class="skill-card group bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-orange-500 transition-all duration-300">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Git-logo.svg" alt="Git" class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform">
+                        <h3 class="text-slate-100 font-semibold">Git</h3>
+                    </div>
+                    <div class="skill-card group bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-slate-400 transition-all duration-300">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub" class="w-12 h-12 mb-3 group-hover:scale-110 transition-transform filter invert">
+                        <h3 class="text-slate-100 font-semibold">GitHub</h3>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Projects Section -->
-        <section id="projects" class="py-16 md:py-24 bg-white rounded-xl shadow-lg mb-12 p-6 md:p-10 animate-fade-in">
-            <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10 relative pb-4">
-                My Projects
-                <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-purple-600 rounded-full"></span>
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-                <div class="project-card bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200 p-6 flex flex-col h-full">
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Portfolio Website</h3>
-                    <p class="text-gray-700 mb-4 flex-grow">A Frontent website make my Portfolio, In all about my things.</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">HTML</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">CSS</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">JavaScript</span>
+        <section id="projects" class="py-20 px-6">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <span class="inline-block px-4 py-2 bg-slate-800 border border-cyan-500/30 rounded-full text-sm text-cyan-400 font-mono mb-4">Portfolio</span>
+                    <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                        <span class="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Featured Projects</span>
+                    </h2>
+                    <div class="h-1 w-24 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full mx-auto"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Authentication API -->
+                <div class="project-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-6 flex flex-col h-full hover:border-cyan-500 transition-all duration-300 group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="p-3 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg">
+                            <i data-lucide="lock" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-green-500/10 border border-green-500/30 rounded-full text-xs text-green-400 font-mono">Backend</span>
                     </div>
-                    <div class="flex space-x-4 mt-auto">
-                        <a href="https://github.com/Het-2004/Portfolio_Website" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition duration-300 ease-in-out text-sm font-medium shadow-sm">
-                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> GitHub
-                        </a>
-                        <a href="https://hetportfolio-lilac.vercel.app/" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition duration-300 ease-in-out text-sm font-medium shadow-sm">
-                            <i data-lucide="code" class="w-4 h-4 mr-2"></i> Demo
+                    <h3 class="text-xl font-bold text-slate-100 mb-3 group-hover:text-cyan-400 transition-colors">Authentication API</h3>
+                    <p class="text-slate-400 mb-4 flex-grow leading-relaxed">A secure backend authentication API with user registration, login, and JWT-based token authentication.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-3 py-1 bg-orange-500/10 border border-orange-500/30 rounded-lg text-xs text-orange-400">Java</span>
+                        <span class="px-3 py-1 bg-green-500/10 border border-green-500/30 rounded-lg text-xs text-green-400">Spring Boot</span>
+                        <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-lg text-xs text-blue-400">JWT</span>
+                        <span class="px-3 py-1 bg-purple-500/10 border border-purple-500/30 rounded-lg text-xs text-purple-400">REST API</span>
+                    </div>
+                    <div class="flex space-x-3 mt-auto">
+                        <a href="https://github.com/Het-2004/Authentication-API" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg transition-all duration-300 text-sm font-medium text-slate-100 group-hover:border-cyan-500">
+                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> View Code
                         </a>
                     </div>
                 </div>
-                <div class="project-card bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200 p-6 flex flex-col h-full">
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">To-Do App</h3>
-                    <p class="text-gray-700 mb-4 flex-grow">Designed and developed a responsive single-page to-do list application.Implemented dynamic task creation, deletion, and completion marking, with data persistence through browser local storage. </p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">HTML</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">CSS</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Tailwind</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Bootstrap</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">JavaScript</span>
 
+                <!-- Movie Search App -->
+                <div class="project-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-6 flex flex-col h-full hover:border-blue-500 transition-all duration-300 group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+                            <i data-lucide="film" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-full text-xs text-blue-400 font-mono">Frontend</span>
                     </div>
-                    <div class="flex space-x-4 mt-auto">
-                        <a href="https://github.com/Het-2004/To-Do-list" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition duration-300 ease-in-out text-sm font-medium shadow-sm">
-                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> GitHub
-                        </a>
-                        <a href="https://to-do-list-three-navy-54.vercel.app/" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition duration-300 ease-in-out text-sm font-medium shadow-sm">
-                            <i data-lucide="code" class="w-4 h-4 mr-2"></i> Demo
+                    <h3 class="text-xl font-bold text-slate-100 mb-3 group-hover:text-blue-400 transition-colors">Movie Search App</h3>
+                    <p class="text-slate-400 mb-4 flex-grow leading-relaxed">React movie search application for discovering and exploring movies with real-time search functionality.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded-lg text-xs text-cyan-400">React</span>
+                        <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-lg text-xs text-blue-400">CSS</span>
+                    </div>
+                    <div class="flex space-x-3 mt-auto">
+                        <a href="https://github.com/Het-2004/Movie-search-app" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg transition-all duration-300 text-sm font-medium text-slate-100 group-hover:border-blue-500">
+                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> View Code
                         </a>
                     </div>
                 </div>
+
+                <!-- Universal Stdin Stdout -->
+                <div class="project-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-6 flex flex-col h-full hover:border-purple-500 transition-all duration-300 group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+                            <i data-lucide="terminal" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-purple-500/10 border border-purple-500/30 rounded-full text-xs text-purple-400 font-mono">Extension</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-100 mb-3 group-hover:text-purple-400 transition-colors">Universal Stdin Stdout</h3>
+                    <p class="text-slate-400 mb-4 flex-grow leading-relaxed">VS Code extension with side panel to view stdin and stdout results in real-time.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-lg text-xs text-blue-400">TypeScript</span>
+                        <span class="px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-xs text-yellow-400">JavaScript</span>
+                        <span class="px-3 py-1 bg-purple-500/10 border border-purple-500/30 rounded-lg text-xs text-purple-400">VS Code API</span>
+                    </div>
+                    <div class="flex space-x-3 mt-auto">
+                        <a href="https://github.com/Het-2004/universal-stdin-stdout" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg transition-all duration-300 text-sm font-medium text-slate-100 group-hover:border-purple-500">
+                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> View Code
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Currency Converter -->
+                <div class="project-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-6 flex flex-col h-full hover:border-green-500 transition-all duration-300 group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="p-3 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg">
+                            <i data-lucide="dollar-sign" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-green-500/10 border border-green-500/30 rounded-full text-xs text-green-400 font-mono">Web App</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-100 mb-3 group-hover:text-green-400 transition-colors">Currency Converter</h3>
+                    <p class="text-slate-400 mb-4 flex-grow leading-relaxed">ReactJS web application for real-time currency conversion with live exchange rates.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded-lg text-xs text-cyan-400">React</span>
+                        <span class="px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-xs text-yellow-400">JavaScript</span>
+                        <span class="px-3 py-1 bg-orange-500/10 border border-orange-500/30 rounded-lg text-xs text-orange-400">HTML5</span>
+                    </div>
+                    <div class="flex space-x-3 mt-auto">
+                        <a href="https://github.com/Het-2004/Currency-Converter" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg transition-all duration-300 text-sm font-medium text-slate-100 group-hover:border-green-500">
+                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> View Code
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Build Your Own Shell -->
+                <div class="project-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-6 flex flex-col h-full hover:border-cyan-500 transition-all duration-300 group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="p-3 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg">
+                            <i data-lucide="terminal-square" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded-full text-xs text-cyan-400 font-mono">Systems</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-100 mb-3 group-hover:text-cyan-400 transition-colors">Build Your Own Shell</h3>
+                    <p class="text-slate-400 mb-4 flex-grow leading-relaxed">Advanced Unix shell in C with command execution, piping, I/O redirection, and background processes.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-lg text-xs text-blue-400">C</span>
+                        <span class="px-3 py-1 bg-purple-500/10 border border-purple-500/30 rounded-lg text-xs text-purple-400">Linux</span>
+                        <span class="px-3 py-1 bg-green-500/10 border border-green-500/30 rounded-lg text-xs text-green-400">Shell</span>
+                    </div>
+                    <div class="flex space-x-3 mt-auto">
+                        <a href="https://github.com/Het-2004/Build-your-own-shell" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg transition-all duration-300 text-sm font-medium text-slate-100 group-hover:border-cyan-500">
+                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> View Code
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Portfolio Website -->
+                <div class="project-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-6 flex flex-col h-full hover:border-purple-500 transition-all duration-300 group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+                            <i data-lucide="user" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-purple-500/10 border border-purple-500/30 rounded-full text-xs text-purple-400 font-mono">Portfolio</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-100 mb-3 group-hover:text-purple-400 transition-colors">Portfolio Website</h3>
+                    <p class="text-slate-400 mb-4 flex-grow leading-relaxed">Modern portfolio website showcasing my projects, skills, and professional journey.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-3 py-1 bg-orange-500/10 border border-orange-500/30 rounded-lg text-xs text-orange-400">HTML</span>
+                        <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-lg text-xs text-blue-400">CSS</span>
+                        <span class="px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-xs text-yellow-400">JavaScript</span>
+                    </div>
+                    <div class="flex space-x-3 mt-auto">
+                        <a href="https://github.com/Het-2004/Portfolio_Website" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg transition-all duration-300 text-sm font-medium text-slate-100 group-hover:border-purple-500">
+                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> Code
+                        </a>
+                        <a href="https://hetportfolio-lilac.vercel.app/" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg transition-all duration-300 text-sm font-medium text-white hover:shadow-lg hover:shadow-purple-500/50">
+                            <i data-lucide="external-link" class="w-4 h-4 mr-2"></i> Live
+                        </a>
+                    </div>
+                </div>
+
+                <!-- To-Do List -->
+                <div class="project-card bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-6 flex flex-col h-full hover:border-blue-500 transition-all duration-300 group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="p-3 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg">
+                            <i data-lucide="check-square" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-full text-xs text-blue-400 font-mono">Web App</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-100 mb-3 group-hover:text-blue-400 transition-colors">To-Do List</h3>
+                    <p class="text-slate-400 mb-4 flex-grow leading-relaxed">Responsive to-do list application for daily task management with add, edit, and delete functionality.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="px-3 py-1 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-xs text-yellow-400">JavaScript</span>
+                        <span class="px-3 py-1 bg-orange-500/10 border border-orange-500/30 rounded-lg text-xs text-orange-400">HTML</span>
+                        <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-lg text-xs text-blue-400">CSS</span>
+                    </div>
+                    <div class="flex space-x-3 mt-auto">
+                        <a href="https://github.com/Het-2004/To-Do-list" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg transition-all duration-300 text-sm font-medium text-slate-100 group-hover:border-blue-500">
+                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> Code
+                        </a>
+                        <a href="https://to-do-list-three-navy-54.vercel.app/" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg transition-all duration-300 text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-500/50">
+                            <i data-lucide="external-link" class="w-4 h-4 mr-2"></i> Live
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Static App -->
+                <!--<div class="project-card bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200 p-6 flex flex-col h-full">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Static App</h3>
+                    <p class="text-gray-700 mb-4 flex-grow">A static web application built with HTML and CSS.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">CSS</span>
+                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">HTML</span>
+                    </div>
+                    <div class="flex space-x-4 mt-auto">
+                        <a href="https://github.com/Het-2004/static-app" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition duration-300 ease-in-out text-sm font-medium shadow-sm">
+                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> GitHub
+                        </a>
+                    </div>
+                </div>-->
+
+                <!-- Het Portfolio (Old) -->
+                <!--<div class="project-card bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200 p-6 flex flex-col h-full">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Het Portfolio</h3>
+                    <p class="text-gray-700 mb-4 flex-grow">An earlier version of my portfolio website.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">HTML</span>
+                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">CSS</span>
+                    </div>
+                    <div class="flex space-x-4 mt-auto">
+                        <a href="https://github.com/Het-2004/het_portfolio" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition duration-300 ease-in-out text-sm font-medium shadow-sm">
+                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> GitHub
+                        </a>
+                    </div>
+                </div>-->
+
+                <!-- Java Programs -->
+                <!--<div class="project-card bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200 p-6 flex flex-col h-full">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Java Programs</h3>
+                    <p class="text-gray-700 mb-4 flex-grow">Collection of Java programming examples and practice problems.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Java</span>
+                    </div>
+                    <div class="flex space-x-4 mt-auto">
+                        <a href="https://github.com/Het-2004/JAVA_PROGRAM" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition duration-300 ease-in-out text-sm font-medium shadow-sm">
+                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> GitHub
+                        </a>
+                    </div>
+                </div>-->
+
+                <!-- Patterns -->
+                <!--<div class="project-card bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200 p-6 flex flex-col h-full">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Patterns</h3>
+                    <p class="text-gray-700 mb-4 flex-grow">Java pattern programs and implementations.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Java</span>
+                    </div>
+                    <div class="flex space-x-4 mt-auto">
+                        <a href="https://github.com/Het-2004/PATTERNS" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition duration-300 ease-in-out text-sm font-medium shadow-sm">
+                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> GitHub
+                        </a>
+                    </div>
+                </div>-->
+
+                <!-- Codeforces Problem Solutions -->
+                <!--<div class="project-card bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200 p-6 flex flex-col h-full">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Codeforces Solutions</h3>
+                    <p class="text-gray-700 mb-4 flex-grow">Solutions to competitive programming problems from Codeforces.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Java</span>
+                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">DSA</span>
+                    </div>
+                    <div class="flex space-x-4 mt-auto">
+                        <a href="https://github.com/Het-2004/Codeforces-Problem-solutions" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition duration-300 ease-in-out text-sm font-medium shadow-sm">
+                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> GitHub
+                        </a>
+                    </div>
+                </div>-->
+
+                <!-- DE Sem 5 TF -->
+                <!--<div class="project-card bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200 p-6 flex flex-col h-full">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">DE Sem 5 TF</h3>
+                    <p class="text-gray-700 mb-4 flex-grow">Data Engineering semester 5 project implementation.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Python</span>
+                    </div>
+                    <div class="flex space-x-4 mt-auto">
+                        <a href="https://github.com/Het-2004/de_sem_5_tf" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition duration-300 ease-in-out text-sm font-medium shadow-sm">
+                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> GitHub
+                        </a>
+                    </div>
+                </div>-->
+
+                <!-- Python Codes -->
+                <!--<div class="project-card bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200 p-6 flex flex-col h-full">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Python Codes</h3>
+                    <p class="text-gray-700 mb-4 flex-grow">Collection of Python programming examples and scripts.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Python</span>
+                    </div>
+                    <div class="flex space-x-4 mt-auto">
+                        <a href="https://github.com/Het-2004/Python_codes" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition duration-300 ease-in-out text-sm font-medium shadow-sm">
+                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> GitHub
+                        </a>
+                    </div>
+                </div>-->
+
+                <!-- C Programs -->
+                <!--<div class="project-card bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200 p-6 flex flex-col h-full">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">C Programs</h3>
+                    <p class="text-gray-700 mb-4 flex-grow">Collection of C programming examples and implementations.</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">C</span>
+                    </div>
+                    <div class="flex space-x-4 mt-auto">
+                        <a href="https://github.com/Het-2004/C-programs" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition duration-300 ease-in-out text-sm font-medium shadow-sm">
+                            <i data-lucide="github" class="w-4 h-4 mr-2"></i> GitHub
+                        </a>
+                    </div>
+                </div>-->
             </div>
         </section>
 
         <!-- Education Section -->
-        <section id="education" class="py-16 md:py-24 bg-blue-50 rounded-xl shadow-lg mb-12 p-6 md:p-10 animate-fade-in">
-            <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10 relative pb-4">
-                Education
-                <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-purple-600 rounded-full"></span>
-            </h2>
-            <div class="max-w-4xl mx-auto">
-                <div class="space-y-8">
+        <section id="education" class="py-20 px-6">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <span class="inline-block px-4 py-2 bg-slate-800 border border-cyan-500/30 rounded-full text-sm text-cyan-400 font-mono mb-4">Academic Journey</span>
+                    <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                        <span class="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Education & Qualifications</span>
+                    </h2>
+                    <div class="h-1 w-24 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full mx-auto"></div>
+                </div>
+                <div class="max-w-4xl mx-auto space-y-6">
                     <!-- Bachelor of Engineering -->
-                    <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200 p-6">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 hover:border-cyan-500 transition-all duration-300 group">
+                        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                             <div class="flex-1">
-                                <h3 class="text-xl font-bold text-gray-900 mb-2">Bachelor of Engineering</h3>
-                                <p class="text-lg text-purple-600 font-semibold mb-2">Computer Engineering</p>
-                                <p class="text-gray-700 mb-2">Vishwakarma Government Engineering College</p>
-                                <p class="text-sm text-gray-600">CGPA: 5.74/10</p>
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="p-2 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg">
+                                        <i data-lucide="graduation-cap" class="w-5 h-5 text-white"></i>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-slate-100 group-hover:text-cyan-400 transition-colors">Bachelor of Engineering</h3>
+                                </div>
+                                <p class="text-lg text-cyan-400 font-semibold mb-2">Computer Engineering</p>
+                                <p class="text-slate-300 mb-2">Vishwakarma Government Engineering College</p>
+                                <p class="text-sm text-slate-400">CGPA: <span class="text-cyan-400 font-semibold">7.07</span>/10</p>
                             </div>
-                            <div class="mt-4 md:mt-0 md:text-right">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
-                                    <i data-lucide="calendar" class="w-4 h-4 mr-1"></i>
+                            <div class="md:text-right">
+                                <span class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/30 rounded-lg text-sm font-medium text-cyan-400">
+                                    <i data-lucide="calendar" class="w-4 h-4 mr-2"></i>
                                     2022 - 2026
                                 </span>
                             </div>
                         </div>
-                        <div class="mt-4">
-                            <p class="text-gray-700 text-sm">
+                        <div class="mt-4 pt-4 border-t border-slate-700">
+                            <p class="text-slate-400 text-sm">
                                 Relevant Coursework: Data Structures, Algorithms, Database Management, Software Engineering, Web Development, Computer Networks
                             </p>
                         </div>
                     </div>
 
                     <!-- HSC (Higher Secondary Certificate) -->
-                    <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200 p-6">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 hover:border-blue-500 transition-all duration-300 group">
+                        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                             <div class="flex-1">
-                                <h3 class="text-xl font-bold text-gray-900 mb-2">Higher Secondary Certificate (HSC)</h3>
-                                <p class="text-lg text-purple-600 font-semibold mb-2">Science Stream - PCM</p>
-                                <p class="text-gray-700 mb-2">Jay Somnath Higher Secondary School</p>
-                                <p class="text-sm text-gray-600">Percentage: 72%</p>
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+                                        <i data-lucide="book-open" class="w-5 h-5 text-white"></i>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-slate-100 group-hover:text-blue-400 transition-colors">Higher Secondary Certificate</h3>
+                                </div>
+                                <p class="text-lg text-blue-400 font-semibold mb-2">Science Stream - PCM</p>
+                                <p class="text-slate-300 mb-2">Jay Somnath Higher Secondary School</p>
+                                <p class="text-sm text-slate-400">Percentage: <span class="text-blue-400 font-semibold">72%</span></p>
                             </div>
-                            <div class="mt-4 md:mt-0 md:text-right">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                                    <i data-lucide="calendar" class="w-4 h-4 mr-1"></i>
+                            <div class="md:text-right">
+                                <span class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-lg text-sm font-medium text-blue-400">
+                                    <i data-lucide="calendar" class="w-4 h-4 mr-2"></i>
                                     2020 - 2022
                                 </span>
                             </div>
                         </div>
-                        <div class="mt-4">
-                            <p class="text-gray-700 text-sm">
-                                Subjects: Physics, Chemistry, Mathematics, English , Computer
+                        <div class="mt-4 pt-4 border-t border-slate-700">
+                            <p class="text-slate-400 text-sm">
+                                Subjects: Physics, Chemistry, Mathematics, English, Computer
                             </p>
                         </div>
                     </div>
 
                     <!-- SSC (Secondary School Certificate) -->
-                    <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out border border-gray-200 p-6">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 hover:border-purple-500 transition-all duration-300 group">
+                        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                             <div class="flex-1">
-                                <h3 class="text-xl font-bold text-gray-900 mb-2">Secondary School Certificate (SSC)</h3>
-                                <p class="text-lg text-purple-600 font-semibold mb-2">General Studies</p>
-                                <p class="text-gray-700 mb-2">Kailash Vidhyalaya Secondary School</p>
-                                <p class="text-sm text-gray-600">Percentage: 80%</p>
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+                                        <i data-lucide="award" class="w-5 h-5 text-white"></i>
+                                    </div>
+                                    <h3 class="text-2xl font-bold text-slate-100 group-hover:text-purple-400 transition-colors">Secondary School Certificate</h3>
+                                </div>
+                                <p class="text-lg text-purple-400 font-semibold mb-2">General Studies</p>
+                                <p class="text-slate-300 mb-2">Kailash Vidhyalaya Secondary School</p>
+                                <p class="text-sm text-slate-400">Percentage: <span class="text-purple-400 font-semibold">80%</span></p>
                             </div>
-                            <div class="mt-4 md:mt-0 md:text-right">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                    <i data-lucide="calendar" class="w-4 h-4 mr-1"></i>
+                            <div class="md:text-right">
+                                <span class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-lg text-sm font-medium text-purple-400">
+                                    <i data-lucide="calendar" class="w-4 h-4 mr-2"></i>
                                     2020
                                 </span>
                             </div>
                         </div>
-                        <div class="mt-4">
-                            <p class="text-gray-700 text-sm">
+                        <div class="mt-4 pt-4 border-t border-slate-700">
+                            <p class="text-slate-400 text-sm">
                                 Subjects: Gujarati, Mathematics, Science, English, Social Studies, Hindi
                             </p>
                         </div>
@@ -292,61 +762,164 @@
         </section>
 
         <!-- Contact Section -->
-        <section id="contact" class="py-16 md:py-24 bg-purple-50 rounded-xl shadow-lg p-6 md:p-10 animate-fade-in">
-            <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-10 relative pb-4">
-                Contact Me
-                <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1 bg-purple-600 rounded-full"></span>
-            </h2>
-            <div class="max-w-xl mx-auto text-center">
-                <p class="text-lg text-gray-700 mb-8">
-                    I'm always open to new opportunities and collaborations. Feel free to reach out!
-                </p>
-                <form class="space-y-6">
-                    <div>
-                        <label for="name" class="sr-only">Name</label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            placeholder="Your Name"
-                            class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                        />
+        <section id="contact" class="py-20 px-6">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16">
+                    <span class="inline-block px-4 py-2 bg-slate-800 border border-cyan-500/30 rounded-full text-sm text-cyan-400 font-mono mb-4">Get In Touch</span>
+                    <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                        <span class="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Let's Work Together</span>
+                    </h2>
+                    <div class="h-1 w-24 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full mx-auto mb-6"></div>
+                    <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+                        I'm always open to new opportunities and collaborations. Feel free to reach out!
+                    </p>
+                </div>
+                <div class="max-w-4xl mx-auto">
+                    <!-- Contact Info Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                        <!-- Email Card -->
+                        <a href="mailto:hetps2122004@gmail.com" 
+                           class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-5 sm:p-6 hover:border-cyan-500 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 group">
+                            <div class="flex items-center gap-3 sm:gap-4">
+                                <div class="p-2 sm:p-3 bg-cyan-500/10 rounded-lg group-hover:bg-cyan-500/20 transition-colors shrink-0">
+                                    <i data-lucide="mail" class="w-5 h-5 sm:w-6 sm:h-6 text-cyan-400"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs sm:text-sm text-slate-400 mb-1">Email</p>
+                                    <p class="text-sm sm:text-base text-slate-300 truncate">hetps2122004@gmail.com</p>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Phone Card -->
+                        <a href="tel:+919724226612" 
+                           class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-5 sm:p-6 hover:border-cyan-500 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 group">
+                            <div class="flex items-center gap-3 sm:gap-4">
+                                <div class="p-2 sm:p-3 bg-cyan-500/10 rounded-lg group-hover:bg-cyan-500/20 transition-colors shrink-0">
+                                    <i data-lucide="phone" class="w-5 h-5 sm:w-6 sm:h-6 text-cyan-400"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs sm:text-sm text-slate-400 mb-1">Phone</p>
+                                    <p class="text-sm sm:text-base text-slate-300">+91 97242 26612</p>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- WhatsApp Card -->
+                        <a href="https://wa.me/919724226612?text=Hi%20Het,%20I%20found%20your%20portfolio%20and%20would%20like%20to%20connect!" 
+                           target="_blank" rel="noopener noreferrer"
+                           class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-5 sm:p-6 hover:border-green-500 hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 group">
+                            <div class="flex items-center gap-3 sm:gap-4">
+                                <div class="p-2 sm:p-3 bg-green-500/10 rounded-lg group-hover:bg-green-500/20 transition-colors shrink-0">
+                                    <i data-lucide="message-circle" class="w-5 h-5 sm:w-6 sm:h-6 text-green-400"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs sm:text-sm text-slate-400 mb-1">WhatsApp</p>
+                                    <p class="text-sm sm:text-base text-slate-300">+91 97242 26612</p>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- GitHub Card -->
+                        <a href="https://github.com/Het-2004" 
+                           target="_blank" rel="noopener noreferrer"
+                           class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-5 sm:p-6 hover:border-cyan-500 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 group">
+                            <div class="flex items-center gap-3 sm:gap-4">
+                                <div class="p-2 sm:p-3 bg-cyan-500/10 rounded-lg group-hover:bg-cyan-500/20 transition-colors shrink-0">
+                                    <i data-lucide="github" class="w-5 h-5 sm:w-6 sm:h-6 text-cyan-400"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs sm:text-sm text-slate-400 mb-1">GitHub</p>
+                                    <p class="text-sm sm:text-base text-slate-300 truncate">Het-2004</p>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- LinkedIn Card -->
+                        <a href="https://www.linkedin.com/in/hetsolanki/" 
+                           target="_blank" rel="noopener noreferrer"
+                           class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-5 sm:p-6 hover:border-cyan-500 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 group">
+                            <div class="flex items-center gap-3 sm:gap-4">
+                                <div class="p-2 sm:p-3 bg-cyan-500/10 rounded-lg group-hover:bg-cyan-500/20 transition-colors shrink-0">
+                                    <i data-lucide="linkedin" class="w-5 h-5 sm:w-6 sm:h-6 text-cyan-400"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs sm:text-sm text-slate-400 mb-1">LinkedIn</p>
+                                    <p class="text-sm sm:text-base text-slate-300 truncate">hetsolanki</p>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Location Card -->
+                        <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-5 sm:p-6">
+                            <div class="flex items-center gap-3 sm:gap-4">
+                                <div class="p-2 sm:p-3 bg-cyan-500/10 rounded-lg shrink-0">
+                                    <i data-lucide="map-pin" class="w-5 h-5 sm:w-6 sm:h-6 text-cyan-400"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs sm:text-sm text-slate-400 mb-1">Location</p>
+                                    <p class="text-sm sm:text-base text-slate-300">Gujarat, India</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label for="email" class="sr-only">Email</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="Your Email"
-                            class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                        />
-                    </div>
-                    <div>
-                        <label for="message" class="sr-only">Message</label>
-                        <textarea
-                            id="message"
-                            name="message"
-                            rows="5"
-                            placeholder="Your Message"
-                            class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                        ></textarea>
-                    </div>
-                    <button
-                        type="submit"
-                        class="w-full bg-purple-600 text-white py-3 px-6 rounded-md font-semibold hover:bg-purple-700 transition duration-300 ease-in-out shadow-md hover:shadow-lg"
-                    >
-                        Send Message
-                    </button>
-                </form>
+                </div>
             </div>
         </section>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-6 text-center text-sm rounded-t-xl">
-        <p>&copy; <span id="current-year"></span> Het Solanki. All rights reserved.</p>
-        <p>Built with HTML, CSS, and JavaScript.</p>
+    <footer class="bg-gradient-to-br from-slate-900 to-slate-800 border-t border-slate-800 py-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <!-- About Column -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Het Solanki</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Computer Engineering student passionate about creating innovative solutions through code.
+                    </p>
+                </div>
+                
+                <!-- Quick Links Column -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-slate-100">Quick Links</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#home" class="text-slate-400 hover:text-cyan-400 transition-colors">Home</a></li>
+                        <li><a href="#about" class="text-slate-400 hover:text-cyan-400 transition-colors">About</a></li>
+                        <li><a href="#projects" class="text-slate-400 hover:text-cyan-400 transition-colors">Projects</a></li>
+                        <li><a href="#contact" class="text-slate-400 hover:text-cyan-400 transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Connect Column -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-slate-100">Connect</h3>
+                    <div class="flex space-x-4">
+                        <a href="https://github.com/Het-2004" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-gradient-to-r hover:from-cyan-500 hover:to-blue-600 transition-all duration-300 transform hover:scale-110 text-slate-400 hover:text-white">
+                            <i data-lucide="github" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/hetsolanki/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-gradient-to-r hover:from-cyan-500 hover:to-blue-600 transition-all duration-300 transform hover:scale-110 text-slate-400 hover:text-white">
+                            <i data-lucide="linkedin" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://instagram.com/vasu_solanki_2" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-gradient-to-r hover:from-cyan-500 hover:to-blue-600 transition-all duration-300 transform hover:scale-110 text-slate-400 hover:text-white">
+                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                        </a>
+                        <a href="mailto:hetpravinbhaisolanki2122004@gmail.com" class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-gradient-to-r hover:from-cyan-500 hover:to-blue-600 transition-all duration-300 transform hover:scale-110 text-slate-400 hover:text-white">
+                            <i data-lucide="mail" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-4 flex items-center">
+                        <i data-lucide="map-pin" class="w-4 h-4 mr-1"></i>
+                        Gujarat, India
+                    </p>
+                </div>
+            </div>
+            
+            <div class="border-t border-slate-800 pt-6 text-center">
+                <p class="text-slate-400 text-sm">&copy; <span id="current-year"></span> Het Solanki. All rights reserved.</p>
+                <p class="text-slate-500 text-xs mt-2">Built with <span class="text-cyan-400">❤️</span> using HTML, CSS, and JavaScript</p>
+            </div>
+        </div>
     </footer>
 
     <!-- External JavaScript -->
